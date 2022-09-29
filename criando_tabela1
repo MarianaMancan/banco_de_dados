@@ -11,3 +11,6 @@ CREATE TABLE aluno(
         hora_aula TIME,
         matriculado_em TIMESTAMP
 );
+//TIMESTAMP é utilizado para formatar uma expressão com data e hora
+//char possui um tamanho definido
+//varchar pode ser até n caracteres
