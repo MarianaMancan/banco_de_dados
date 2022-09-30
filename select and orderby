@@ -1,0 +1,26 @@
+select aluno.primeiro_nome, ultimo_nome,count(curso.id) numero_cursos
+from aluno
+join aluno_curso on aluno_curso.aluno_id = aluno.id 
+join curso on curso.id = aluno_curso.curso_id
+group by aluno.primeiro_nome, aluno.ultimo_nome
+
+select aluno.primeiro_nome, ultimo_nome,count(curso.id) numero_cursos
+from aluno
+join aluno_curso on aluno_curso.aluno_id = aluno.id 
+join curso on curso.id = aluno_curso.curso_id
+group by 1,2
+
+select aluno.primeiro_nome, ultimo_nome,count(curso.id) numero_cursos
+from aluno
+join aluno_curso on aluno_curso.aluno_id = aluno.id 
+join curso on curso.id = aluno_curso.curso_id
+group by 1,2
+order by numero_cursos desc
+
+select aluno.primeiro_nome, ultimo_nome,count(curso.id) numero_cursos
+from aluno
+join aluno_curso on aluno_curso.aluno_id = aluno.id 
+join curso on curso.id = aluno_curso.curso_id
+group by 1,2
+order by numero_cursos desc
+limit 1;
