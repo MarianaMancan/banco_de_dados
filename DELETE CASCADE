@@ -1,2 +1,15 @@
 //Se não definir as restriçoes ao tentar apagar uma key dará erro
 // on delete cascade = ao excluir um registro em uma tabela, um registro relacionado em outra tabela é automaticamente excluído
+
+CREATE TABLE aluno_curso (
+    aluno_id INTEGER,
+    curso_id INTEGER,
+    PRIMARY KEY (aluno_id, curso_id),
+    
+    FOREIGN KEY (aluno_id)
+    REFERENCES aluno (id) ON DELETE cascade,
+    
+
+    FOREIGN KEY (curso_id)
+    REFERENCES curso (id)
+);
