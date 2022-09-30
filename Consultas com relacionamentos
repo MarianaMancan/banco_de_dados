@@ -1,0 +1,12 @@
+SELECT *
+  FROM aluno
+  JOIN aluno_curso ON aluno_curso.aluno_id = aluno.id
+  join curso on curso_id =aluno_curso.aluno_id
+  
+  insert into aluno_curso (aluno_id, curso_id) values (2,2)
+  
+   SELECT aluno.nome as aluno,
+  curso.nome as curso
+  FROM aluno
+  JOIN aluno_curso ON aluno_curso.aluno_id = aluno.id
+  join curso on curso_id =aluno_curso.aluno_id
