@@ -1,0 +1,34 @@
+//FULL JOIN, NÃO IMPORTA SE O DADO EXISTE NA TABELA DA DIREITA OU DA ESQUERDA
+//Use a operação LEFT JOIN para criar uma junção externa esquerda. As junções externas esquerdas incluem todos os registros da primeira de duas tabelas
+(a da esquerda),
+mesmo se não houver valores correspondentes na segunda tabela (à direita)
+
+//Use uma operação RIGHT JOIN para criar uma junção externa direita. As junções externas direitas incluem todos os registros da segunda de duas tabelas
+(a da direita), mesmo se não houver valores correspondentes para registros na primeira tabela (à esquerda).
+//extrair os dados da tabela "aluno" (FROM aluno) e mesclar à tabela curso (CROSS JOIN curso), como se cada aluno estivesse matriculado em todos os cursos
+
+//join os dados da tabela A precisam conter na tabela B
+
+SELECT aluno.nome as "Nome do Aluno",
+        curso.nome as "Nome do Curso"
+    FROM aluno
+LEFT JOIN aluno_curso ON aluno_curso.aluno_id = aluno.id
+LEFT JOIN curso ON curso.id = aluno_curso.curso_id
+ 
+SELECT aluno.nome as "Nome do Aluno",
+        curso.nome as "Nome do Curso"
+    FROM aluno
+RIGHT join aluno_curso ON aluno_curso.aluno_id = aluno.id
+right JOIN curso ON curso.id = aluno_curso.curso_id
+
+
+ SELECT aluno.nome as "Nome do Aluno",
+        curso.nome as "Nome do Curso"
+    FROM aluno
+FULL JOIN aluno_curso ON aluno_curso.aluno_id = aluno.id
+FULL JOIN curso ON curso.id = aluno_curso.curso_id
+
+SELECT aluno.nome as "Nome do Aluno",
+        curso.nome as "Nome do Curso"
+    FROM aluno
+CROSS JOIN curso
