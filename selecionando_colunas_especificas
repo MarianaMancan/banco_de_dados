@@ -1,0 +1,6 @@
+select * from aluno
+select nome,idade,matriculado_em as quando_se_matriculado
+from aluno;
+select nome as "nome do aluno",
+idade,matriculado_em as quando_se_matriculado
+from aluno;
