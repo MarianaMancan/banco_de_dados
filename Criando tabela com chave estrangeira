@@ -1,0 +1,32 @@
+CREATE TABLE curso (
+    id INTEGER primary key,
+        nome VARCHAR(255) not null
+);
+
+CREATE TABLE aluno (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE aluno_curso (
+    aluno_id INTEGER,
+    curso_id INTEGER,
+    PRIMARY KEY (aluno_id, curso_id),
+    
+    FOREIGN KEY (aluno_id)
+    REFERENCES aluno (id),
+
+    FOREIGN KEY (curso_id)
+    REFERENCES curso (id)
+);
+INSERT INTO aluno (nome) VALUES ('Diogo');
+INSERT INTO aluno (nome) VALUES ('Vinícius');
+
+insert into curso (id,nome) values (1,'html');
+insert into curso (id,nome) values (2,'javascript')
+
+insert into aluno_curso (aluno_id,curso_id) values (1,1)
+insert into aluno_curso (aluno_id,curso_id) values (2,1)
+insert into aluno_curso (aluno_id,curso_id) values (1,2)
+
+//a chave estrangeira evita inconstitencias no banco de dados
