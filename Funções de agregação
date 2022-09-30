@@ -1,0 +1,10 @@
+-- COUNT - Retorna a quantidade de registros
+-- SUM -   Retorna a soma dos registros
+-- MAX -   Retorna o maior valor dos registros
+-- MIN -   Retorna o menor valor dos registros
+-- AVG -   Retorna a média dos registros
+
+  
+ select count(*),sum(id),max(id),min(id),avg(id) from funcionarios;
+  
+ select count(*),sum(id),max(id),min(id),ROUND(AVG(id),2) from funcionarios;
