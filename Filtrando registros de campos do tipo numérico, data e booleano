@@ -1,0 +1,7 @@
+select * from aluno where cpf is null
+select * from aluno where cpf is not null
+select * from aluno where idade >=35
+select * from aluno where idade <=35
+select * from aluno where idade < 100
+select * from aluno where idade between 10 and 35
+select * from aluno where ativo = true
