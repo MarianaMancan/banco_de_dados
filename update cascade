@@ -1,0 +1,12 @@
+SELECT 
+       aluno.id as "Aluno id",
+       aluno.nome as "Nome do Aluno",
+       curso.id as "Curso id",
+       curso.nome as "Nome do Curso"
+    FROM aluno
+    JOIN aluno_curso ON aluno_curso.aluno_id = aluno.id
+    JOIN curso ON curso.id = aluno_curso.curso_id
+
+UPDATE aluno
+    SET id = 20
+    WHERE id = 4;
