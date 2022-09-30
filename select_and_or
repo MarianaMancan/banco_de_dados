@@ -1,0 +1,6 @@
+//só é verdadeiro se os dois casos forem verdadeiros dentro do mesmo registro
+select * from aluno where nome like 'D%'
+and cpf is not null
+
+select * from aluno where nome like 'Diogo'
+or nome like 'rodrigo'
