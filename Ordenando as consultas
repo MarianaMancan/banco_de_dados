@@ -1,0 +1,30 @@
+create table funcionarios(
+id Serial primary key,
+matricula VARCHAR(10),
+nome VARCHAR(255),
+sobrenome VARCHAR(255)
+);
+
+insert into funcionarios (matricula,nome,sobrenome) values ('M001','Diogo','Mascarenas')
+insert into funcionarios (matricula,nome,sobrenome) values ('M002','Vinicius','Dias')
+insert into funcionarios (matricula,nome,sobrenome) values ('M003','Alberto','Santos')
+insert into funcionarios (matricula,nome,sobrenome) values ('M004','João','Martins')
+insert into funcionarios (matricula,nome,sobrenome) values ('M005','Nico','Dummond')
+
+)
+select * from funcionarios order by nome
+
+select * from funcionarios order by nome desc
+
+select * from funcionarios order by nome,matricula
+
+select * from funcionarios order by nome,matricula desc
+
+select * from funcionarios order by 3,4,2
+
+SELECT aluno.nome as "Nome do Aluno",
+       curso.nome as "Nome do Curso"
+    FROM aluno
+    JOIN aluno_curso ON aluno_curso.aluno_id = aluno.id
+    JOIN curso ON curso.id = aluno_curso.curso_id
+    order by aluno.nome
