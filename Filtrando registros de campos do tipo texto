@@ -1,0 +1,22 @@
+insert into aluno (nome) values ('vincius dias');
+insert into aluno (nome) values ('Nico seppat');
+insert into aluno (nome) values ('João roberto');
+insert into aluno (nome) values ('Diego');
+
+select * from aluno where nome = 'Diogo'
+//diferente de
+select * from aluno where nome <> 'Diogo'
+/diferente de
+select * from aluno where nome != 'Diogo' 
+//parecido com
+select * from aluno where nome like 'Di_go'
+//não parecido
+select * from aluno where nome not like 'Di_go'
+//comece com d
+select * from aluno where nome like 'D%'
+// termine com s
+select * from aluno where nome like '%s'
+//possua espaço na palavra
+select * from aluno where nome like '% %'
+//possua um i e depois um a
+select * from aluno where nome like '%i%a%'
