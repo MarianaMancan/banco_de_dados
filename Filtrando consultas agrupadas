@@ -1,0 +1,32 @@
+//Uma cláusula HAVING em SQL especifica que uma instrução SQL SELECT deve retornar apenas linhas onde os valores agregados atendem às condições especificadas
+
+SELECT *
+    FROM curso
+    LEFT JOIN aluno_curso ON aluno_curso.curso_id = curso.id
+    LEFT JOIN aluno ON aluno.id = aluno_curso.aluno_id
+   
+SELECT curso.nome,count(aluno.id)
+    FROM curso
+    LEFT JOIN aluno_curso ON aluno_curso.curso_id = curso.id
+    LEFT JOIN aluno ON aluno.id = aluno_curso.aluno_id
+    --WHERE COUNT(aluno.id) = 0
+GROUP BY 1
+    HAVING COUNT (aluno.id) = 0
+    
+//selecionar funcionarios com nome duplicado
+SELECT nome
+    FROM funcionarios
+    GROUP BY nome
+    HAVING COUNT(id) > 1;
+    
+//selecionar e contar os funcionarios duplicados  
+ SELECT nome,count(id)
+    FROM funcionarios
+    GROUP BY nome
+    HAVING COUNT(id) > 1;
+    
+//seleciona e contar a quantidade de funcionarios que não possuem o nome duplicado    
+   SELECT nome,count(id)
+    FROM funcionarios
+    GROUP BY nome
+    HAVING COUNT(id) = 1;
