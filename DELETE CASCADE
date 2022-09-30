@@ -1,0 +1,2 @@
+//Se não definir as restriçoes ao tentar apagar uma key dará erro
+// on delete cascade = ao excluir um registro em uma tabela, um registro relacionado em outra tabela é automaticamente excluído
