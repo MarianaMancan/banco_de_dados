@@ -1,0 +1,6 @@
+    
+  select * from funcionarios limit 5;
+  
+   select * from funcionarios order by nome limit 5 offset 1 ;
+   
+   //offset 1 pula o primeiro registro
