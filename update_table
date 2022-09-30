@@ -1,0 +1,12 @@
+update aluno set
+        nome ='nilo',
+        cpf = '09123456789',
+        observação = 'teste',
+        idade = 38,
+        dinheiro = 13.23,
+        altura = 1.90,
+        ativo = false,
+        data_nascimento = '1980-01-15',
+        hora_aula = '13:00:00',
+        matriculado_em = '2020-01-02 15:00:00'
+WHERE id = 1;   
