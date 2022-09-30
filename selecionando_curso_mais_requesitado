@@ -1,0 +1,12 @@
+select curso.nome,count(aluno_curso.aluno_id) numero_alunos
+from curso
+join aluno_curso on aluno_curso.curso_id = curso.id
+group by curso.nome
+order by numero_alunos desc
+
+select curso.nome,count(aluno_curso.aluno_id) numero_alunos
+from curso
+join aluno_curso on aluno_curso.curso_id = curso.id
+group by curso.nome
+order by numero_alunos desc
+limit 1
