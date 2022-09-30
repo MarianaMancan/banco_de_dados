@@ -1,0 +1,13 @@
+CREATE TABLE curso (
+    id INTEGER not null unique,
+        nome VARCHAR(255) not null
+);
+CREATE TABLE curso (
+    id INTEGER primary key,
+        nome VARCHAR(255) not null
+);
+insert into curso (id,nome) values (1,'html');
+insert into curso (id,nome) values (2,'javascript')
+select * from curso
+drop table curso
+//no dois casos ele não salvará s se o arquivo for igual
