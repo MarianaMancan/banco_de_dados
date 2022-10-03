@@ -1,0 +1,14 @@
+
+ create table instrutor(
+ id serial primary key,
+ nome varchar(255) not null,
+ salario Decimal(10,2)
+ )
+ 
+ insert into instrutor(nome,salario) values ('Carla Souza',100)
+ 
+CREATE FUNCTION dobra_salario(instrutor instrutor) RETURNS DECIMAL AS $$
+    SELECT instrutor.salario * 2 AS salario_pretendido;
+$$ LANGUAGE SQL;
+ 
+select nome,dobra_salario(instrutor.*) from instrutor
