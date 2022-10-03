@@ -1,0 +1,15 @@
+// '' ou aspas slimples delimitam textos
+// "" ou aspas duplas delimitam campos
+// numeros não são entre aspas
+
+select primeira_coluna as "Primeira coluna" from teste;
+
+select * from teste
+
+alter table teste rename coluna1 to primeira_coluna
+
+alter table teste rename coluna2 to segunda_coluna
+
+select primeira_coluna as "Primeira coluna" from teste;
+
+insert into teste Values('20-05-2003',14)
