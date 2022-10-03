@@ -1,3 +1,5 @@
+//A documentação de conversão de tipos está disponivel em https://www.postgresql.org/docs/9.5/functions-formatting.html
+
 select NOW() :: DATE;
 
 select to_char(NOW(),'DD/MM/YYYY');
