@@ -1,0 +1,21 @@
+//funçoes no postgres
+//juntar com = ||
+//a função concat é utilizada para juntar com null
+//bit_length(string) numero de bits
+//char_length(string) or character_length(string) numero de caracteres em uma string
+//trim remove os espaços do incio e do final
+// todas as funçoes do postgres podem ser encontradas em https://www.postgresql.org/docs/9.1/functions-string.html
+
+select (primeiro_nome || ultimo_nome) as nome_completo from aluno;
+
+select concat('Vinicius',' ', null)
+
+select bit_length('Vinicius')
+
+select char_length('jose') 
+
+select upper(primeiro_nome || ' ' || ultimo_nome) as nome_completo from aluno;
+
+select upper(primeiro_nome || ' ' || ultimo_nome) as nome_completo from aluno;
+
+SELECT TRIM(UPPER(CONCAT('Vinicius', NULL, 'Dias') || ' '));
