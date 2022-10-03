@@ -1,0 +1,5 @@
+create function soma_dois_numeros(numero_1 integer, numero_2 integer) returns integer as 
+' select numero_1 + numero_2;  '
+language sql
+ 
+select  soma_dois_numeros(3,7)
