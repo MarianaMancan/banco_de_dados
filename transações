@@ -1,0 +1,10 @@
+//begin deixa salvo permitindo desfazer deletes,ponto de restauração
+//realmente deixa salvo as alteraçoes
+
+
+begin
+ select * from cursos_programação
+ delete  from cursos_programação
+ 
+ rollback
+ commit
