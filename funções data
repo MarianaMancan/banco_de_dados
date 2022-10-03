@@ -1,0 +1,17 @@
+// NOW() pega a data atual  com o horario
+// NOW() :: Date mostra apenas o dia,mes e ano
+//AGE() nos retorna a idea
+//EXTRACT() extrai parte da data
+//todas as funçoes no postgres de manipulação de data estão em https://www.postgresql.org/docs/9.1/functions-datetime.html
+
+select  (primeiro_nome || ' ' || ultimo_nome) as nome_completo,NOW(),data_nascimento from aluno;
+
+select  (primeiro_nome || ' ' || ultimo_nome) as nome_completo,NOW() :: Date ,data_nascimento from aluno;
+
+select  (primeiro_nome || ' ' || ultimo_nome) as nome_completo,NOW() :: Date - data_nascimento from aluno;
+
+select  (primeiro_nome || ' ' || ultimo_nome) as nome_completo,(NOW() :: Date - data_nascimento)/ 365 as idade from aluno;
+
+select  (primeiro_nome || ' ' || ultimo_nome) as nome_completo,AGE(data_nascimento) from aluno;
+
+select  (primeiro_nome || ' ' || ultimo_nome) as nome_completo,EXTRACT(year from AGE(data_nascimento)) as idade from aluno;
