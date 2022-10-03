@@ -1,0 +1,23 @@
+ create sequence eu_criei
+ 
+  begin
+ select * from cursos_programação
+ delete  from cursos_programação
+ select * from auto
+ rollback
+ commit
+ 
+ select currval('eu_criei')
+ 
+  select nextval('eu_criei') 
+  
+ create temporary table auto(
+ id integer primary key default  nextval('eu_criei') ,
+ nome varchar(30) not null 
+ 
+ )
+ insert into auto (nome) values('Vinicius dias')
+ insert into auto (id,nome) values(2,'Vitor dias')
+ create sequence eu_criei
+
+ 
