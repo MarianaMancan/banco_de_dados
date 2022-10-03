@@ -1,0 +1,20 @@
+
+select categoria.nome as categoria,
+COUNT(curso.id) as numero_cursos
+from categoria
+join curso on curso.categoria_id = categoria.id
+group by categoria
+
+
+
+select categoria,
+numero_cursos
+from(
+  select categoria.nome as categoria,
+  COUNT(curso.id) as numero_cursos
+  from categoria
+  join curso on curso.categoria_id = categoria.id
+  group by categoria
+
+) as categoria_curso
+where numero_cursos > 3
