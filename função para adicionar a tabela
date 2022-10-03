@@ -1,0 +1,7 @@
+create table a(nome VARCHAR(255) not null);
+create or replace function cria_a(nome varchar) returns varchar as 
+'insert into a (nome) values (cria_a.nome);
+ select nome;
+'language sql
+
+ select cria_a('Ingrid Souza')
