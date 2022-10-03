@@ -1,0 +1,6 @@
+select NOW() :: DATE;
+
+select to_char(NOW(),'DD/MM/YYYY');
+select TO_CHAR(128.3::real,'999D99');
+select to_number('12,454.8-', '99G999D9S');
+select to_timestamp('05 Dec 2000', 'DD Mon YYYY');
