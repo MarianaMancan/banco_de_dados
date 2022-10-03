@@ -1,0 +1,17 @@
+create temporary table cursos_progrmação(
+  id_curso integer primary key,
+  nome_curso varchar(255) not null
+)
+alter table cursos_progrmação rename to cursos_programação
+
+insert into cursos_programação values (4,'PHP'),(5,'JAVA'),(6,'C++')
+
+select * from cursos_programação
+
+
+insert into cursos_programação
+select academico.curso.id,
+      academico.curso.nome
+from academico.curso
+join academico.categoria on academico.categoria.id = academico.curso.categoria_id
+where categoria_id = 2
