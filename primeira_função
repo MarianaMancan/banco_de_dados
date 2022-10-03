@@ -3,4 +3,4 @@ create function first_function() returns integer as
  language SQL
  
  
- select  first_function();
+ select  first_function() as numero;
