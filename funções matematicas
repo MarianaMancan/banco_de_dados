@@ -1,0 +1,13 @@
+//todas funçoes matematicas do postgres estão presentes
+ em https://www.postgresql.org/docs/9.5/functions-math.html
+ select PI();
+//valor absoluto
+select abs(-281);
+// a raiza cubica
+select cbrt(27);
+//inteiro mais proximo
+select ceil(23.4435);
+//quociente inteiro
+select div(9,4)
+//valor absoluto
+SELECT @ -17581452174
