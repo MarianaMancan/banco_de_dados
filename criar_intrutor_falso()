@@ -1,0 +1,6 @@
+create function cria_instrutor_falso() returns instrutor  as 
+$$ select 14 as id,'noome falso' as nome,200:: DECIMAL as salario;
+$$         
+language sql;
+
+select id,salario from cria_instrutor_falso();
