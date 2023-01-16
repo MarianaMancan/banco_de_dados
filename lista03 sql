@@ -1,0 +1,355 @@
+/*Desenvolva duas triggers (ao final desse exercício, REMOVA a trigger do banco de dados para não
+ocasionar problemas nos próximos treinamentos):
+De inserção na tabela CONTAS, que deverá gravar o USUARIOINCLUSAO com o seu nome, e DATAINCLUSAO
+com a data corrente.
+De alteração na tabela CONTAS que deverá gravar o USUARIOALTERACAO com o seu nome, e
+DATAALTERACAO com a data corrente.
+Insira uma nova conta e realize a consulta da conta cadastrada. Verifique a gravação apenas dos campos
+USUARIOINCLUSAO e DATAINCLUSAO
+Altere uma conta e realize a consulta da conta alterada. Verifique a gravação apenas dos campos
+USUARIOALTERACAO e DATAALTERACAO */
+
+
+
+CREATE OR ALTER TRIGGER T_UPDATE_CONTAS ON CONTAS AFTER UPDATE
+AS BEGIN
+
+
+UPDATE CONTAS SET USUARIOALTERACAO = SYSTEM_USER, DATAALTERACAO = GETDATE()
+FROM INSERTED WHERE CONTAS.NROCONTA = inserted.NROCONTA
+AND CONTAS.CODCOLIGADA = inserted.codcoligada
+and CONTAS.NROCONTA = INSERTED.NROCONTA
+
+
+END 
+GO
+DROP  TRIGGER T_UPDATE_CONTAS 
+
+Alter table CONTAS Add DATAALTERACAO DATETIME
+Go 
+
+
+
+
+
+CREATE OR ALTER TRIGGER T_INSERT_CONTAS ON CONTAS AFTER INSERT
+AS BEGIN
+
+
+UPDATE CONTAS SET USUARIOINCLUSAO = SYSTEM_USER, DATAINCLUSAO = GETDATE()
+FROM INSERTED WHERE CONTAS.NROCONTA = inserted.NROCONTA
+
+END 
+GO
+DROP  TRIGGER T_INSERT_CONTAS
+
+
+INSERT INTO CONTAS (CODCOLIGADA,CODAGENCIA,NROCONTA,CODPESSOA,INDPOUPANCA,USUARIOINCLUSAO,DATAINCLUSAO,USUARIOALTERACAO)
+VALUES ('2','003','14534','1','n','MARIANA',GETDATE(),'MARIANA')
+Go 
+
+SELECT * FROM CONTAS;
+Go 
+
+UPDATE CONTAS
+SET INDPOUPANCA = 'S'
+WHERE CODCOLIGADA = 2
+Go 
+--Realize uma consulta que retorne a soma de todos os movimentos feitos a partir de um determinado
+--período (01/01/2011 - 15/01/2011)
+SELECT COUNT(*) FROM MOVIMENTOS M WHERE M.DATAMOVIMENTO >= '01/01/2011' AND M.DATAMOVIMENTO <= '15/01/2011'
+Go 
+
+--Insira um novo cliente e não cadastre conta nem movimento para ele.
+INSERT INTO PESSOAS (CODPESSOA,CPFCNPJ,NOME,DATANASCIMENTO,TIPOPESSOA,NUMEROFILHOS,INDCLIENTEBANCO,
+TIPOLOGRADOURO,LOGRADOURO,BAIRRO,CIDADE,UF,PAIS,CEP,OBSERVACAO)
+values('6','4207774443','CESAR',cast('26/10/1967' as date),'F','4','S','ca','rua das castanhas','vila MARIANA','São Paulo',
+'SP','BRASIL','1333678','CASA CESAR')
+Go 
+
+SELECT * FROM MOVIMENTOS
+Go 
+--Realize uma consulta que retorne os movimentos que foram realizados para o cliente com NOME iniciado
+--por b;
+SELECT  C.CODPESSOA,P.NOME,C.INDPOUPANCA as contaPoupanca, P.CPFCNPJ,P.INDCLIENTEBANCO as clienteBanco,M.VALOR AS VALOR, M.DATAMOVIMENTO AS DATA
+FROM CONTAS C LEFT JOIN PESSOAS P ON C.CODPESSOA = P.CODPESSOA 
+LEFT JOIN MOVIMENTOS M ON M.CODAGENCIA = C.CODAGENCIA
+GROUP BY C.CODPESSOA,P.NOME,C.INDPOUPANCA, P.CPFCNPJ,M.DATAMOVIMENTO,P.INDCLIENTEBANCO,M.VALOR HAVING P.NOME = 'B%'
+Go 
+--Realize uma consulta que retorne apenas os clientes que não possuem movimentos
+
+SELECT  C.CODPESSOA,P.NOME,C.INDPOUPANCA as contaPoupanca, P.CPFCNPJ,P.INDCLIENTEBANCO 
+as clienteBanco,M.VALOR AS VALOR, M.DATAMOVIMENTO AS DATA,M.NROMOVIMENTO
+FROM CONTAS C LEFT JOIN PESSOAS P ON C.CODPESSOA = P.CODPESSOA 
+LEFT JOIN MOVIMENTOS M ON M.CODAGENCIA = C.CODAGENCIA
+GROUP BY C.CODPESSOA,P.NOME,C.INDPOUPANCA, P.CPFCNPJ,M.DATAMOVIMENTO,P.INDCLIENTEBANCO,M.VALOR ,M.NROMOVIMENTO HAVING M.NROMOVIMENTO = NULL OR M.NROMOVIMENTO = '';
+Go
+
+SELECT * FROM CONTAS
+GO
+
+--Crie uma procedure utilizando os recursos de transação (begin, rollback e commit).
+CREATE OR ALTER PROCEDURE  P_CADRASTO_CONTAS(
+       -- Add the parameters for the stored procedure here
+      @CODCOLIGADA varchar(3),
+      @CODAGENCIA varchar(5),
+      @NROCONTA varchar(7),
+      @CODPESSOA varchar(3),
+      @INDPOUPANCA  char(1)
+                                           )
+AS
+BEGIN
+       -- SET NOCOUNT ON added to prevent extra result sets from
+       -- interfering with SELECT statements.
+       SET NOCOUNT ON;
+
+       BEGIN TRAN
+              BEGIN TRY
+                     -- Insert into PersonalDetails table first
+                     INSERT INTO CONTAS (CODCOLIGADA,CODAGENCIA,NROCONTA,CODPESSOA,INDPOUPANCA,USUARIOINCLUSAO,DATAINCLUSAO,USUARIOALTERACAO)
+                     VALUES (@CODCOLIGADA,@CODAGENCIA,@NROCONTA,@CODPESSOA,@INDPOUPANCA,SYSTEM_USER,GETDATE(),'');
+                     
+              -- if not error, commit the transcation
+              COMMIT TRANSACTION
+       END TRY
+       BEGIN CATCH
+              -- if error, roll back any chanegs done by any of the sql statements
+               SELECT ERROR_MESSAGE() AS ErrorMessage;  
+              ROLLBACK TRANSACTION
+       END CATCH
+END
+GO
+
+-- EXECUTANDO PROCEDURE
+EXEC P_CADRASTO_CONTAS '67', '097', '34','1','S';
+GO
+
+SELECT * FROM PESSOAS
+GO
+--Crie uma view que retorne apenas o número das contas que tem movimentos com valores acima de
+--1000,00. Realize uma consulta a partir desta view.
+
+CREATE VIEW MOVIMENTOS_ALTOS AS SELECT * FROM MOVIMENTOS M WHERE M.VALOR > 1000;
+GO
+
+
+
+SELECT * FROM MOVIMENTOS_ALTOS
+GO
+--Crie uma procedure com um cursor que leia a tabela MOVIMENTOS. Percorra o cursor e exiba ‘Movimento
+--Alto’ para movimentos com VALOR acima de 1.000 e ‘Movimento Baixo’ para movimentos abaixo de
+--1.000.
+--adicionando coluna status para poder definir MOVIMENTO ALTA E MOVIMENTO BAIXO
+ALTER TABLE MOVIMENTOS ADD CLASSIFICAO VARCHAR(100)
+GO
+
+
+
+CREATE OR ALTER PROCEDURE P_CLASSIFICAO_MOVIMENTO
+as 
+
+       
+        DECLARE C_CLASSIFICAO CURSOR FORWARD_ONLY FOR 
+        SELECT CODCOLIGADA, CODAGENCIA,
+		NROCONTA, NROMOVIMENTO,
+		DATAMOVIMENTO,VALOR, CLASSIFICAO from MOVIMENTOS;
+       
+                                           
+        OPEN C_CLASSIFICAO                                    
+        FETCH next from C_CLASSIFICAO
+
+
+WHILE @@FETCH_STATUS = 0
+	BEGIN
+
+	 FETCH NEXT FROM C_CLASSIFICAO
+               
+        UPDATE movimentos set CLASSIFICAO = CASE
+                                                WHEN VALOR > 1000 THEN 'Movimento alto'
+                                                when valor <= 1000 then 'Movimento baixo'
+                                             END;  
+	END
+
+CLOSE C_CLASSIFICAO
+DEALLOCATE C_CLASSIFICAO
+go
+
+
+
+
+
+select * from MOVIMENTOS
+GO
+--Crie uma trigger de UPDATE para a tabela MOVIMENTOS. Verifique se o campo DATAMOVIMENTO foi
+--alterado, e caso ele tenha sido alterado, emita uma mensagem de erro se a data for menor que a data
+--atual.
+CREATE OR ALTER TRIGGER TG_CHECK_DATA ON MOVIMENTOS
+AFTER UPDATE
+AS
+BEGIN 
+	IF (SELECT DATAMOVIMENTO FROM INSERTED) <> (SELECT DATAMOVIMENTO FROM DELETED)
+	
+	BEGIN
+		DECLARE @DATAALTERADA DATETIME,
+				@ERRO VARCHAR(300)
+
+	    SELECT @DATAALTERADA = DATAMOVIMENTO FROM INSERTED
+	
+		IF @DATAALTERADA < GETDATE()
+		BEGIN
+			SET @ERRO = 'Erro, a data de movimento é menor que a data atual'
+			RAISERROR(@ERRO, 16, 1)
+			
+		END
+	END
+END
+
+UPDATE MOVIMENTOS SET DATAMOVIMENTO = cast('26/10/1967' as date)
+WHERE NROMOVIMENTO = '13'
+GO
+--*Crie uma função que calcule o saldo anterior do movimento, que é a soma de todos os movimentos da
+--conta cuja data é menor que a data atual. Apresente os movimentos das contas com a data do
+--movimento, valor do movimento, saldo anterior e calcule o saldo atual que é o valor do movimento
+--mais o saldo anterior.
+
+ALTER TABLE MOVIMENTOS ADD VALORTOTAL NUMERIC(17,2);
+GO
+
+CREATE OR ALTER FUNCTION F_SOMA_MOVIMENTOS_ANTERIORES(
+@CODCOLIGADA VARCHAR(3),
+@CODAGENCIA VARCHAR (5),
+@NROCONTA VARCHAR(7),
+@DATAREFERENCIA DATETIME
+
+)
+RETURNS NUMERIC(20,2)
+WITH EXECUTE AS CALLER
+AS BEGIN
+DECLARE @SALDO_ANTERIOR NUMERIC(20,2) = (
+    SELECT SUM(M.VALOR)
+    FROM MOVIMENTOS M 
+    INNER JOIN CONTAS C ON (C.CODAGENCIA = M.CODAGENCIA )
+    WHERE M.CODCOLIGADA = @CODCOLIGADA AND M.CODAGENCIA = @CODAGENCIA AND M.NROCONTA = @NROCONTA
+    AND M.DATAMOVIMENTO < @DATAREFERENCIA
+    GROUP BY M.CODAGENCIA,M.CODCOLIGADA,M.NROCONTA
+)
+IF  @SALDO_ANTERIOR IS NULL SET  @SALDO_ANTERIOR = 0.00
+RETURN  @SALDO_ANTERIOR
+END
+GO
+
+SELECT M.CODCOLIGADA,M.CODAGENCIA,M.NROCONTA,M.NROMOVIMENTO,M.DATAMOVIMENTO,M.VALOR,
+DBO.F_SOMA_MOVIMENTOS_ANTERIORES(M.CODCOLIGADA,M.CODAGENCIA,M.NROCONTA,M.DATAMOVIMENTO) AS saldo_anterior,
+(M.VALOR +DBO.F_SOMA_MOVIMENTOS_ANTERIORES(M.CODCOLIGADA,M.CODAGENCIA,M.NROCONTA,M.DATAMOVIMENTO)) AS SALDO_ATUAL
+FROM MOVIMENTOS M 
+ORDER BY M.CODCOLIGADA,M.CODAGENCIA,M.NROCONTA,M.DATAMOVIMENTO;
+
+GO
+
+CREATE FUNCTION VALOR_ANTES_DO_MOVIMENTO( @CODCOLIGADA CHAR(3), @CODAGENCIA CHAR(5), @NROCONTA CHAR(7))
+RETURNS NUMERIC(19,2)
+BEGIN 
+    DECLARE @VALOR NUMERIC(19,2)
+
+   SELECT @VALOR = SUM(VALOR) FROM MOVIMENTOS M 
+   WHERE M.DATAMOVIMENTO < GETDATE() AND @CODCOLIGADA = M.CODCOLIGADA 
+         AND @CODAGENCIA = M.CODAGENCIA AND @NROCONTA = M.NROCONTA
+    RETURN @VALOR
+END
+GO
+
+ --Exercícios opcionais
+
+-- Crie uma procedure que some 10,00 no campo DESCONTO e subtraia 10,00 do campo VALOR da tabela
+--MOVIMENTOS para todos os clientes que:
+--Tem conta poupança (INDPOUPANCA = S) e o dia e o mês do campo DATANASCIMENTO da tabela PESSOA
+--seja igual ao dia e o mês do campo DATAMOVIMENTO da tabela MOVIMENTO (daquela pessoa)
+
+CREATE OR ALTER PROCEDURE P_CALCULANDO_DESCONTO
+AS
+BEGIN 
+
+SELECT  C.CODPESSOA,P.NOME,C.INDPOUPANCA as contaPoupanca, P.DATANASCIMENTO,SUM(M.VALOR - 10) AS VALOR, M.DATAMOVIMENTO AS DATA,
+SUM(M.DESCONTO +10) AS DESCONTO
+FROM CONTAS C LEFT JOIN PESSOAS P ON C.CODPESSOA = P.CODPESSOA 
+LEFT JOIN MOVIMENTOS M ON M.CODAGENCIA = C.CODAGENCIA
+GROUP BY C.CODPESSOA,P.NOME,C.INDPOUPANCA, M.DESCONTO,M.DATAMOVIMENTO,P.DATANASCIMENTO,M.VALOR HAVING C.INDPOUPANCA ='S' 
+ and MONTH(M.DATAMOVIMENTO) = MONTH(P.DATANASCIMENTO)
+
+ END    
+
+ --Insira uma nova pessoa com data de nascimento 05/01/1990 e insira um movimento para esta pessoa no
+--dia 05/01/2010 com VALOR = 100,00
+INSERT INTO PESSOAS (CODPESSOA,CPFCNPJ,NOME,DATANASCIMENTO,TIPOPESSOA,NUMEROFILHOS,INDCLIENTEBANCO,
+TIPOLOGRADOURO,LOGRADOURO,BAIRRO,CIDADE,UF,PAIS,CEP,OBSERVACAO)
+VALUES ('4','42072566711','angela',CAST('05/01/1990' as date) ,'J','0','S','ca','RUA DAS CRAVINAS','CENTRO','SÃO BERNADO DO CAMPO',
+'SP','BRASIL','18345003','CASA ANGELA')
+
+INSERT INTO CONTAS (CODCOLIGADA,CODAGENCIA,NROCONTA,CODPESSOA,INDPOUPANCA,USUARIOINCLUSAO,DATAINCLUSAO,USUARIOALTERACAO)
+VALUES ('3','006','1999','4','S','MARIANA',CAST('05/01/1990' as date),'MARIANA')
+
+INSERT INTO MOVIMENTOS (CODCOLIGADA,CODAGENCIA,NROCONTA,DATAMOVIMENTO,
+      VALOR,MORA,MULTA,DESCONTO,DESCRICAO)
+VALUES('3','006','1999',CAST('05/01/1990' as date),100.0,0.0,00.0,0.0,0.0)
+
+SELECT * FROM PESSOAS
+
+--Insira um movimento para a mesma pessoa no dia 07/01/2010 com VALOR = 100,00
+INSERT INTO MOVIMENTOS (CODCOLIGADA,CODAGENCIA,NROCONTA,DATAMOVIMENTO,
+      VALOR,MORA,MULTA,DESCONTO,DESCRICAO)
+VALUES('3','006','1999',CAST('07/01/2010' as date),100.0,0.0,00.0,0.0,0.0)
+
+--Execute a procedure e realize uma consulta na tabela MOVIMENTO para verificar se o DESCONTO de 10,00
+--foi dado para a pessoa e se foi abatido o valor de 10 reais do campo VALOR, na tabela MOVIMENTOS, de
+--acordo com as condições impostas pelo exercício. Apenas para um dos movimentos o desconto deve ter
+--sido concedido e o valor abatido.
+EXEC P_CALCULANDO_DESCONTO;
+
+
+--Realize uma consulta que busque todas as contas (não repetir a conta) que possuem movimentos com
+--desconto.
+SELECT  C.CODPESSOA,P.NOME,C.INDPOUPANCA as contaPoupanca, P.DATANASCIMENTO,M.VALOR  AS VALOR, M.DATAMOVIMENTO AS DATA,
+M.DESCONTO  AS DESCONTO
+FROM CONTAS C LEFT JOIN PESSOAS P ON C.CODPESSOA = P.CODPESSOA 
+LEFT JOIN MOVIMENTOS M ON M.CODAGENCIA = C.CODAGENCIA GROUP BY C.CODPESSOA,P.NOME,C.INDPOUPANCA,
+ M.DESCONTO,M.DATAMOVIMENTO,P.DATANASCIMENTO,M.VALOR HAVING M.DESCONTO > 0
+GO
+ --Realize uma consulta que retorne apenas o ano de cada registro da tabela movimentos.
+ SELECT DATAMOVIMENTO FROM MOVIMENTOS
+ GO
+
+ --Realize uma consulta na tabela Contas que retorne Sim caso o valor do campo INDPOUPANCA seja igual a
+--s, ou Não caso o valor do campo INDPOUPANCA seja igual a N, desde que o cliente que possua esta conta
+--seja cliente do banco (INDCLIENTEBANCO = S).
+
+select C.CODPESSOA,C.CODAGENCIA,C.INDPOUPANCA,CASE 
+       WHEN C.INDPOUPANCA = 'S' THEN 'SIM' 
+      WHEN C.INDPOUPANCA = 'N' THEN 'Não' 
+    END AS CONTAPOUPANCA,P.INDCLIENTEBANCO,P.NOME 
+    FROM CONTAS C LEFT JOIN PESSOAS P ON C.CODPESSOA = P.CODPESSOA 
+    GROUP BY C.CODPESSOA,C.CODAGENCIA,C.INDPOUPANCA,P.INDCLIENTEBANCO, P.NOME 
+    HAVING P.INDCLIENTEBANCO = 'S';
+
+    --Elabore um consulta qualquer utilizando LEFT JOIN, RIGHT JOIN e JOIN e descreva o propósito dessa
+--consulta.
+
+-- lEFT join : Retorna todos os registros da tabela esquerda (tabela A) e as correspondências que existirem 
+--com a tabela direita (tabela B).
+select P.NOME,P.CODPESSOA,C.CODAGENCIA,C.NROCONTA
+FROM PESSOAS P LEFT JOIN  CONTAS C ON  C.CODPESSOA = P.CODPESSOA 
+
+
+--RIGHT JOIN:Retornará todos os registros da tabela direita (tabela B) e as correspondências que existirem com a tabela
+-- esquerda (tabela A)
+select P.NOME,P.CODPESSOA,C.CODAGENCIA,C.NROCONTA
+FROM PESSOAS P RIGHT JOIN  CONTAS C ON  C.CODPESSOA = P.CODPESSOA 
+
+
+--INNER JOIN etorna os registros que são comuns às duas tabelas.
+select P.NOME,P.CODPESSOA,C.CODAGENCIA,C.NROCONTA
+FROM PESSOAS P inner JOIN  CONTAS C ON  C.CODPESSOA = P.CODPESSOA 
+
+--Elabore uma consulta que retorne os campos valor, mora e multa da tabela movimentos, garantindo que,
+--se o valor a ser exibido for null, retorne zero.
+
+select isnull(VALOR,0) as valor,isnull(MORA,0) as mora,isnull(MULTA,0) as multa FROM MOVIMENTOS
