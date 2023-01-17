@@ -1,0 +1,31 @@
+create or alter FUNCTION retiraAcentoPalavra(@TextoOriginal varchar(100))
+returns varchar(100)
+as BEGIN 
+        DECLARE @vComAcento as varchar(300)
+        DECLARE @vSemAcento as varchar(300)
+        DECLARE @a as INT
+        DECLARE @vPosicao as INT
+
+        set @vComAcento = 'àáâãäåçèéêëìíîïòóôõöùúûüÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜ'
+        set @vSemAcento = 'aaaaaaceeeeiiiiooooouuuuAAAAAACEEEEIIIIOOOOOUUUU '
+        set @a = 1
+
+
+  while @a <= len(@TextoOriginal)   
+    BEGIN
+        set @vPosicao = CHARINDEX(SUBSTRING(@TextoOriginal,@A,1),@vComAcento,1);
+
+        if @vPosicao > 0
+            set @TextoOriginal = replace(@TextoOriginal
+            ,SUBSTRING(@vComAcento,@vPosicao,1),
+            SUBSTRING(@vSemAcento,@vPosicao,1));
+
+        SET @a = @a +1
+
+    END
+    RETURN @TextoOriginal
+    END
+    
+GO
+
+select DBO.retiraAcentoPalavra('ATÉ AMANHÃ');
